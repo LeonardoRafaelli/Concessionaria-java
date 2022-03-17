@@ -16,7 +16,7 @@ public class Automovel {
 
     @Override
     public String toString() {
-        return super.toString() + " Automovel{" +
+        return " Automovel{" +
                 "modelo='" + modelo + '\'' +
                 ", placa='" + placa + '\'' +
                 ", ano=" + ano +

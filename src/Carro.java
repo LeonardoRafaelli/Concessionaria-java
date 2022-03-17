@@ -20,7 +20,7 @@ public class Carro extends Automovel{
 
     @Override
     public String toString() {
-        return "Carro{" +
+        return super.toString() + " Carro{" +
                 "cavalosPotencia=" + cavalosPotencia +
                 ", tracao='" + tracao + '\'' +
                 ", qntdPortas=" + qntdPortas +

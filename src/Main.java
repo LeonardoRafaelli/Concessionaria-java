@@ -9,9 +9,9 @@ public class Main {
         menuPrincipal();
     }
 
-    public static void menuPrincipal(){
+    private static void menuPrincipal(){
         System.out.print("""
-                ---- Menu Principal ----
+                \n---- Menu Principal ----
                 1 - Cadastrar veículo;
                 2 - Alterar veículo;
                 3 - Remover veículo;
@@ -21,61 +21,182 @@ public class Main {
         int opcao = sc.nextInt();
         switch (opcao){
             case 1 -> {
-                cadastraAlteraVeiculo(1, 0);
+                cadastraVeiculo();
                 menuPrincipal();
             }
             case 2 -> {
                 alterarVeiculo();
                 menuPrincipal();
             }
+            case 3 -> {
+                removerVeiculo();
+                menuPrincipal();
+            }
             case 4 -> {
                 listarVeiculos();
+                menuPrincipal();
+            }
+            case 5 -> {
+                System.exit(0);
+            }
+            default -> {
+                System.out.print(opcao + ", Não é uma opção válida.");
                 menuPrincipal();
             }
         }
     }
 
-    //Altera dados de algum veículo
-    public static void alterarVeiculo(){
-        int tipo = opcaoTipo("---- Alterar ----");
-        switch (tipo){
-            case 1 -> {
-                System.out.print("Insira a placa do veículo: ");
-                String placa = sc.next();
-                int i = indicePlaca(1, placa);
-
-                if(i >= 0){
-                    System.out.print("Alterar\n1 - Todos os atributos;\n2 - Atributos específicos\nDigite aqui: ");
-                    int alterar = sc.nextInt();
-                    switch (alterar) {
-                        case 1 -> {
-                            cadastraAlteraVeiculo(2, i);
-                        }
-                        case 2 -> {
-//                            alterarAtributo();
-                        }
-                    }
-                } else {
-                    System.out.println("Placa não encontrada!");
+    private static void removerVeiculo(){
+        int tipo = opcaoTipo("---- Remover ----");
+        System.out.print("Insira a placa do veículo: ");
+        String placa = sc.next();
+        int i = indicePlaca(tipo, placa);
+        if(i >= 0){
+            switch (tipo){
+                case 1 -> {
+                    Carro.listaCarros.remove(i);
+                    System.out.println("Carro removido com sucesso!");
+                }
+                case 2 -> {
+                    Moto.listaMotos.remove(i);
+                    System.out.println("Moto removida com sucesso!");
                 }
             }
+
+        } else {
+            System.out.println("Placa do veículo não encontrada!");
         }
     }
 
-    public static void listarVeiculos(){
+    //Altera dados de algum veículo
+    private static void alterarVeiculo(){
+        int tipo = opcaoTipo("---- Alterar ----");
+        System.out.print("Insira a placa do veículo: ");
+        String placa = sc.next();
+        int i = indicePlaca(tipo, placa);
+        System.out.print("Alterar\n1 - Todos os atributos;\n2 - Atributos específicos\n3 - Redigitar placa;\n4 - Voltar para o menu principal.\nDigite aqui: ");
+        int alterar = sc.nextInt();
+        if(i >= 0) {
+            switch (tipo) {
+                case 1 -> {
+                    switch (alterar) {
+                        case 1 -> {
+                            alterarCarAtributoS(i);
+                        }
+                        case 2 -> {
+                            alterarCarAtributO(i);
+                        }
+                        case 3 -> {
+                            alterarVeiculo();
+                        }
+                        case 4 -> {
+                            menuPrincipal();
+                        }
+                        default -> {
+                            System.out.println(alterar + ", não é uma opção válida.n\n");
+                        }
+                    }
+                }
+                case 2 -> {
+                    switch (alterar){
+                        case 1 -> {
+                            alterarMotAtributoS(i);
+                        }
+                        case 2 -> {
+                            alterarMotAtributO(i);
+                        }
+                        case 3 -> {
+                            alterarVeiculo();
+                        }
+                        case 4 -> {
+                            menuPrincipal();
+                        }
+                        default -> {
+                            System.out.println(alterar + ", não é uma opção válida.n\n");
+                        }
+                    }
+                }
+            }
+        } else {
+            System.out.println("Placa do veículo não encontrada!");
+        }
+    }
+
+    private static void alterarMotAtributO(int i) {
+        System.out.print("\nSelecione o atributo que deseja alterar:" +
+                "\n1 - Modelo;" +
+                "\n2 - Placa;" +
+                "\n3 - Ano;" +
+                "\n4 - Preço;" +
+                "\n5 - Cilindradas;" +
+                "\n6 - Tempos do motor;" +
+                "\n7 - Transmissão;" +
+                "\nDigite aqui: ");
+        int opcao = sc.nextInt();;
+        switch (opcao){
+            case 1 -> { System.out.print("Novo Modelo: "); Moto.listaMotos.get(i).setModelo(sc.next()); }
+            case 2 -> { System.out.print("Nova Placa: "); Moto.listaMotos.get(i).setPlaca(sc.next()); }
+            case 3 -> { System.out.print("Novo Ano: "); Moto.listaMotos.get(i).setAno(sc.nextInt()); }
+            case 4 -> { System.out.print("Novo Preço: "); Moto.listaMotos.get(i).setPreco(sc.nextDouble()); }
+            case 5 -> { System.out.print("Novas Cilindradas: "); Moto.listaMotos.get(i).setCilindradas(sc.nextInt()); }
+            case 6 -> { System.out.print("Nova Tempos do motor: "); Moto.listaMotos.get(i).setTemposMotor(sc.nextInt()); }
+            case 7 -> { System.out.print("Nova Transmissão: "); Moto.listaMotos.get(i).setTransmissao(sc.next()); }
+        }
+    }
+
+    private static void alterarMotAtributoS(int i) {
+        Automovel auto = cadastroAuto();
+
+        System.out.print("Cilindradas: ");
+        int cilindradas = sc.nextInt();
+        System.out.print("Tempos do motor: ");
+        int tempos = sc.nextInt();
+        System.out.print("Quantidade de Portas: ");
+        String transmissao = sc.next();
+
+        Moto mot = new Moto(auto.getModelo(), auto.getPlaca(), auto.getAno(), auto.getPreco(), cilindradas, tempos, transmissao);
+        Moto.listaMotos.set(i, mot);
+    }
+
+    private static void alterarCarAtributO(int i){
+        System.out.print("\nSelecione o atributo que deseja alterar:" +
+                "\n1 - Modelo;" +
+                "\n2 - Placa;" +
+                "\n3 - Ano;" +
+                "\n4 - Preço;" +
+                "\n5 - Cavalos de potência;" +
+                "\n6 - Tração;" +
+                "\n7 - Quantidade de portas;" +
+                "\nDigite aqui: ");
+        int opcao = sc.nextInt();;
+        switch (opcao){
+            case 1 -> { System.out.print("Novo Modelo: "); Carro.listaCarros.get(i).setModelo(sc.next()); }
+            case 2 -> { System.out.print("Nova Placa: "); Carro.listaCarros.get(i).setPlaca(sc.next()); }
+            case 3 -> { System.out.print("Novo Ano: "); Carro.listaCarros.get(i).setAno(sc.nextInt()); }
+            case 4 -> { System.out.print("Novo Preço: "); Carro.listaCarros.get(i).setPreco(sc.nextDouble()); }
+            case 5 -> { System.out.print("Novo Cavalos de Potência: "); Carro.listaCarros.get(i).setCavalosPotencia(sc.nextInt()); }
+            case 6 -> { System.out.print("Nova Tração: "); Carro.listaCarros.get(i).setTracao(sc.next()); }
+            case 7 -> { System.out.print("Nova Quantidade de portas: "); Carro.listaCarros.get(i).setQntdPortas(sc.nextInt()); }
+        }
+    }
+
+    private static void listarVeiculos(){
         int tipo = opcaoTipo("---- Listar ----");
         switch (tipo){
             case 1 -> {
                 for (int i = 0; i < Carro.listaCarros.size(); i++){
-                    Carro.listaCarros.get(i).toString();
-                    System.out.println("Teste");
+                    System.out.println(Carro.listaCarros.get(i).toString());
                 }
             }
-            default -> System.out.println("teste11");
+            case 2 -> {
+                for (int i = 0; i < Moto.listaMotos.size(); i++){
+                    System.out.println(Moto.listaMotos.get(i).toString());
+                }
+            }
         }
     }
 
-    public static void alterarAtributoS(int i){
+    private static void alterarCarAtributoS(int i){
         Automovel auto = cadastroAuto();
 
         System.out.print("Cavalos de potência: ");
@@ -90,7 +211,7 @@ public class Main {
     }
 
     //Verifica a existência da placa
-    public static int indicePlaca(int tipo, String placa){
+    private static int indicePlaca(int tipo, String placa){
         switch (tipo){
             case 1 -> {
                 for (int i = 0; i < Carro.listaCarros.size(); i++) {
@@ -110,11 +231,11 @@ public class Main {
         return -1;
     }
 
-    public static void cadastraAlteraVeiculo(int opcao, int i){
+    private static void cadastraVeiculo(){
         int tipo = opcaoTipo("---- Cadastrar ----");
+        Automovel auto = cadastroAuto();
         switch (tipo){
             case 1 -> {
-                Automovel auto = cadastroAuto();
 
                 System.out.print("Cavalos de potência: ");
                 int cavalosPotencia = sc.nextInt();
@@ -124,27 +245,36 @@ public class Main {
                 int qntdPortas = sc.nextInt();
 
                 Carro car = new Carro(auto.getModelo(), auto.getPlaca(), auto.getAno(), auto.getPreco(), cavalosPotencia, tracao, qntdPortas);
-                if(opcao == 1){
-                    Carro.listaCarros.add(car);
-                } else {
-                    Carro.listaCarros.set(i, car);
-                }
+                Carro.listaCarros.add(car);
+            }
+            case 2 -> {
+
+                System.out.print("Cilindradas: ");
+                int cilindradas = sc.nextInt();
+                System.out.print("Tempos do Motor: ");
+                int temposMotor = sc.nextInt();
+                System.out.print("Transmissão: ");
+                String transmissao = sc.next();
+
+                Moto mot = new Moto(auto.getModelo(), auto.getPlaca(), auto.getAno(), auto.getPreco(), cilindradas, temposMotor, transmissao);
+                Moto.listaMotos.add(mot);
             }
         }
     }
 
-    public static int opcaoTipo(String cadastro) {
-        System.out.print(cadastro +
+    private static int opcaoTipo(String cadastro) {
+        System.out.print("\n" + cadastro +
                 "\n1 - Carro;" +
                 "\n2 - Moto." +
                 "\nDigite aqui: ");
         return sc.nextInt();
     }
 
-    public static Automovel cadastroAuto(){
+    private static Automovel cadastroAuto(){
         Automovel auto = new Automovel();
-        System.out.print("---- Cadastro ----\nInsira as seguintes informações" +
-                "Placa do veículo: ");
+        System.out.print("\n---- Cadastro ----" +
+                "\nInsira as seguintes informações" +
+                "\nPlaca do veículo: ");
         auto.setPlaca(sc.next());
         System.out.print("Modelo: ");
         auto.setModelo(sc.next());
@@ -154,5 +284,4 @@ public class Main {
         auto.setPreco(sc.nextInt());
         return auto;
     }
-
 }
