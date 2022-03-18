@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Moto extends Automovel{
 
     static ArrayList<Moto> listaMotos = new ArrayList<Moto>();
-
+    static ArrayList<Moto> listaMotosVendidas = new ArrayList<Moto>();
 
     private int cilindradas, temposMotor;
     private String transmissao;

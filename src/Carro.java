@@ -1,8 +1,10 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Carro extends Automovel{
 
     static ArrayList<Carro> listaCarros = new ArrayList<Carro>();
+    static ArrayList<Carro> listaVendidos = new ArrayList<Carro>();
 
     private int cavalosPotencia;
     private String tracao;

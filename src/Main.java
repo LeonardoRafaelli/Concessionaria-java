@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Main {
 
     static Scanner sc = new Scanner(System.in);
+    static double banco = 0;
 
     public static void main(String[] args) {
 
@@ -15,8 +16,11 @@ public class Main {
                 1 - Cadastrar veículo;
                 2 - Alterar veículo;
                 3 - Remover veículo;
-                4 - Listar veículo;
-                5 - Encerrar;
+                4 - Listar veículos;
+                5 - Listar veículos vendidos;
+                6 - Vender veículo;
+                7 - Verificar quantidade e preço total de carros vendidos;
+                8 - Encerrar;
                 Digite aqui:\s""");
         int opcao = sc.nextInt();
         switch (opcao){
@@ -37,6 +41,18 @@ public class Main {
                 menuPrincipal();
             }
             case 5 -> {
+                listarVeiculosVendidos();
+                menuPrincipal();
+            }
+            case 6 -> {
+                venderVeiculo();
+                menuPrincipal();
+            }
+            case 7 -> {
+                bancoConcessionaria();
+                menuPrincipal();
+            }
+            case 8 -> {
                 System.exit(0);
             }
             default -> {
@@ -44,6 +60,42 @@ public class Main {
                 menuPrincipal();
             }
         }
+    }
+
+    private static void bancoConcessionaria(){
+        int tipo = opcaoTipo("---- Preço total de vendidos ----");
+        switch (tipo){
+            case 1->{
+                double precoTotal = Carro.listaVendidos.stream().mapToDouble(Automovel::getPreco).sum();
+                int quantidade = Carro.listaVendidos.size();
+                System.out.println("Quantidade de carros vendidos: " + quantidade);
+                System.out.println("Preço total dos carros ja vendidos: " + precoTotal);
+            }
+            case 2->{
+                double precoTotal = Moto.listaMotosVendidas.stream().mapToDouble(Automovel::getPreco).sum();
+                int quantidade = Moto.listaMotosVendidas.size();
+                System.out.println("Quantidade de motos vendidas: " + quantidade);
+                System.out.println("Preço total de motos ja venidas: " + precoTotal);
+            }
+        }
+    }
+
+    private static void venderVeiculo(){
+        int tipo = opcaoTipo("---- Vender ----");
+        System.out.print("Insira a placa do veículo vendido: ");
+        String placa = sc.next();
+        int i = indicePlaca(tipo, placa);
+        switch (tipo){
+            case 1 -> {
+                Carro.listaVendidos.add(Carro.listaCarros.get(i));
+                Carro.listaCarros.remove(i);
+            }
+            case 2 -> {
+                Moto.listaMotosVendidas.add(Moto.listaMotos.get(i));
+                Moto.listaMotos.remove(i);
+            }
+        }
+        System.out.println("Automóvel vendido com sucesso!");
     }
 
     private static void removerVeiculo(){
@@ -192,6 +244,18 @@ public class Main {
                 for (int i = 0; i < Moto.listaMotos.size(); i++){
                     System.out.println(Moto.listaMotos.get(i).toString());
                 }
+            }
+        }
+    }
+
+    private static void listarVeiculosVendidos(){
+        int tipo = opcaoTipo("---- Listar ----");
+        switch (tipo){
+            case 1 -> {
+                Carro.listaVendidos.forEach(car -> System.out.println(car.toString()));
+            }
+            case 2 -> {
+               Moto.listaMotosVendidas.forEach(mot -> System.out.println(mot.toString()));
             }
         }
     }
