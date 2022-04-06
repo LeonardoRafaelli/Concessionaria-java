@@ -48,13 +48,16 @@ public class Main {
                 8 - Editar clientes;
                 9 - Listar Funcionários;
                 10 - Cadastrar clientes;
-                11 - Sair <<<< ;
-                12 - !!! - Encerrar;""");
+                11 - Remover clientes
+                12 - Sair <<<< ;
+                13 - !!! - Encerrar;""");
         if(Pessoa.listaPessoas.get(i) instanceof Dono){
-            System.out.println("\n13 - Cadastrar cliente;");
-            System.out.print("14 - Cadastrar funcionário;" +
-                    "\n15 - Editar funcionário;" +
+            System.out.print("\n14 - Cadastrar funcionário;" +
+                    "\n15 - Remover funcionário" +
+                    "\n16 - Editar funcionário;" +
                     "\nDigite aqui: ");
+        } else {
+            System.out.print("\nDigite aqui: ");
         }
 
         int opcao = sc.nextInt();
@@ -65,23 +68,24 @@ public class Main {
                 case 3 -> { removerVeiculo(); }
                 case 4 -> { listarVeiculos(); }
                 case 5 -> { listarVeiculosVendidos(); }
-                case 6 -> { venderVeiculo(); }
+                case 6 -> { venderVeiculo(i); }
                 case 7 -> listarPessoa(1);
                 case 8 -> editarPessoa(1);
                 case 9 -> listarPessoa(2);
                 case 10 -> cadastroPessoa(1);
-                case 11 -> programa();
-                case 12 -> System.exit(0);
+                case 11 -> removerPessoa(1);
+                case 12 -> programa();
+                case 13 -> System.exit(0);
                 default -> {
                     System.out.print(opcao + ", Não é uma opção válida.");
                 }
             }
-        } else if(opcao <= 15) {
+        } else if(opcao <= 16) {
             if(Pessoa.listaPessoas.get(i) instanceof Dono){
-                if(opcao == 14){
-                    cadastroPessoa(2);
-                } else {
-                    editarPessoa(2);
+                switch (opcao){
+                    case 14 -> cadastroPessoa(2);
+                    case 15 -> removerPessoa(2);
+                    case 16 -> editarPessoa(2);
                 }
             } else {
                 System.out.println("Opção inválida!");
@@ -90,6 +94,39 @@ public class Main {
             System.out.println("Opção inválida!");
         }
         menuPrincipal(i);
+    }
+
+    private static void removerPessoa(int tipo){
+        System.out.println("Digite a matrícula da pessoa que deseja remover" +
+                "\n R: ");
+        int indice = coletaIndice(sc.nextInt());
+        if(indice >= 0){
+
+            if(tipo == 1){
+                if(Pessoa.listaPessoas.get(indice) instanceof Cliente){
+                    Pessoa.listaPessoas.remove(indice);
+                } else {
+                    System.out.println("Matrícula não ligada a algum cliente.");
+                }
+            } else {
+                if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
+                    Pessoa.listaPessoas.remove(indice);
+                } else {
+                    System.out.println("Matrícula não ligada a algum funcionário.");
+                }
+            }
+        } else {
+            System.out.println("Matrícula não encontrada");
+        }
+    }
+
+    private static int coletaIndice(int matricula){
+        for(int i = 0; i < Pessoa.listaPessoas.size(); i++){
+         if(Pessoa.listaPessoas.get(i).getMatricula() == matricula){
+             return i;
+         }
+        }
+        return -1;
     }
 
     private static void cadastroPessoa(int tipo){
@@ -128,6 +165,8 @@ public class Main {
         }
     }
 
+
+
     private static void listarPessoa(int tipo){
         if(tipo == 1){
             Pessoa.listaPessoas.forEach(pessoa -> {
@@ -144,13 +183,31 @@ public class Main {
         }
     }
 
-    private static void venderVeiculo(){
+    private static void venderVeiculo(int indice){
         System.out.print("Insira a placa do veículo vendido: ");
         String placa = sc.next();
         int i = indicePlaca(placa);
        if(i > -1){
+           System.out.println(Automovel.listaAutomoveis.get(i).toString());
+           System.out.println("Digite a porcentagem de desconto: ");
+           double porcentagem = sc.nextDouble();
+           if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
+               if(porcentagem > 2){
+                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco());
+               } else if(porcentagem > 0){
+                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), porcentagem);
+               }
+           }
+           if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
+               if(porcentagem > 2){
+                   Automovel.listaAutomoveis.get(i).setPreco(Automovel.listaAutomoveis.get(i).getPreco() - (Automovel.listaAutomoveis.get(i).getPreco() * 0.02));
+               } else if(porcentagem > 0){
+                   Automovel.listaAutomoveis.get(i).setPreco(Automovel.listaAutomoveis.get(i).getPreco() - (Automovel.listaAutomoveis.get(i).getPreco() * porcentagem));
+               }
+           }
            Automovel.listaAutomoveisVendidos.add(Automovel.listaAutomoveis.get(i));
            Automovel.listaAutomoveis.remove(i);
+
            System.out.println("Automóvel vendido com sucesso!");
        } else {
            System.out.println("Placa não encontrada!");
