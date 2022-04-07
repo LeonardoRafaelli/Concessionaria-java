@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
 
@@ -7,6 +8,11 @@ public class Main {
     public static void main(String[] args) {
         Pessoa.listaPessoas.add(new Dono(1, 45, "Josescreudo", "11209407965", "Masculino", "991964275", "123"));
         Pessoa.listaPessoas.add(new Funcionario(2, 25, "Filipe", "12345678910", "Masculino", "991521540", "321"));
+        Pessoa.listaPessoas.add(new Cliente(3, 28, "Antagonista", "10123456789", "Masculino", "991144234"));
+        Pessoa.listaPessoas.add(new Cliente(4, 24, "Ana", "10658932189", "Masculino", "945846854"));
+        Pessoa.listaPessoas.add(new Cliente(5, 23, "Antônio", "98765432101", "Masculino", "991165658"));
+        Pessoa.listaPessoas.add(new Cliente(6, 29, "Jorge", "98765232101", "Masculino", "991134658"));
+        Automovel.listaAutomoveis.add(new Carro("Spin", "RDV", 2019, 60000, 111, "Diant", 4));
         programa();
     }
 
@@ -174,6 +180,7 @@ public class Main {
                     System.out.println(pessoa);
                 }
             });
+
         } else {
             Pessoa.listaPessoas.forEach(pessoa -> {
                 if(pessoa instanceof Funcionario){
@@ -187,24 +194,28 @@ public class Main {
         System.out.print("Insira a placa do veículo vendido: ");
         String placa = sc.next();
         int i = indicePlaca(placa);
+
        if(i > -1){
+           int iDono = getOwner();
+
            System.out.println(Automovel.listaAutomoveis.get(i).toString());
-           System.out.println("Digite a porcentagem de desconto: ");
+           System.out.println("Digite a porcentagem de desconto (max 2%): ");
            double porcentagem = sc.nextDouble();
            if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
-               if(porcentagem > 2){
-                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco());
-               } else if(porcentagem > 0){
-                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), porcentagem);
+               if(porcentagem >= 2){
+                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), 0);
+               } else if(porcentagem >= 0){
+                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), (0.02 - (porcentagem/100)));
                }
            }
-           if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
-               if(porcentagem > 2){
-                   Automovel.listaAutomoveis.get(i).setPreco(Automovel.listaAutomoveis.get(i).getPreco() - (Automovel.listaAutomoveis.get(i).getPreco() * 0.02));
-               } else if(porcentagem > 0){
-                   Automovel.listaAutomoveis.get(i).setPreco(Automovel.listaAutomoveis.get(i).getPreco() - (Automovel.listaAutomoveis.get(i).getPreco() * porcentagem));
-               }
+
+           if(porcentagem >= 2){
+               Automovel.listaAutomoveis.get(i).setPreco(Automovel.listaAutomoveis.get(i).getPreco() - (Automovel.listaAutomoveis.get(i).getPreco() * 0.02));
+           } else if(porcentagem >= 0){
+               Automovel.listaAutomoveis.get(i).setPreco(Automovel.listaAutomoveis.get(i).getPreco() - (Automovel.listaAutomoveis.get(i).getPreco() * (porcentagem/100)));
            }
+           Automovel.listaAutomoveis.get(i).setDono(((Cliente) Funcionario.listaPessoas.get(iDono)));
+           System.out.println(iDono);
            Automovel.listaAutomoveisVendidos.add(Automovel.listaAutomoveis.get(i));
            Automovel.listaAutomoveis.remove(i);
 
@@ -212,6 +223,35 @@ public class Main {
        } else {
            System.out.println("Placa não encontrada!");
        }
+    }
+
+    private static int getOwner(){
+        System.out.print("Digite o nome do comprador: ");
+        String nome = sc.next();
+        int cont = 0;
+        for(int y = 0; y < Pessoa.listaPessoas.size(); y++){
+            if(Pessoa.listaPessoas.get(y) instanceof Cliente){
+                for(int i = 0; i < nome.length(); i++){
+                    if(Pessoa.listaPessoas.get(y).getNome().charAt(i) == nome.charAt(i)){
+                        cont++;
+                    }
+                }
+                if(cont == nome.length()){
+                    System.out.println("Nome: " + Pessoa.listaPessoas.get(y).getNome() + " / Código: " + Pessoa.listaPessoas.get(y).getMatricula());
+                }
+                cont = 0;
+            }
+        }
+        int cod;
+        do {
+            System.out.print("Digite o código aqui: ");
+            cod = sc.nextInt();
+            for(int i = 0; i < Pessoa.listaPessoas.size(); i++){
+                if(Pessoa.listaPessoas.get(i).getMatricula() == cod){
+                    return i;
+                }
+            }
+        } while(true);
     }
 
     private static void removerVeiculo(){

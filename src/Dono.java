@@ -4,6 +4,17 @@ public class Dono extends Funcionario{
 
     public Dono(int matricula, int idade, String nome, String cpf, String genero, String telefone, String senha) {
         super(matricula, idade, nome, cpf, genero, telefone, senha);
+        this.salario = getSalario();
+    }
+
+    @Override
+    public double getSalario() {
+        return salario;
+    }
+
+    @Override
+    public void setSalario(double salario) {
+        this.salario = salario;
     }
 
     @Override
@@ -11,4 +22,8 @@ public class Dono extends Funcionario{
         this.setSalario(this.getSalario());
     }
 
+    @Override
+    public String toString() {
+        return super.toString(this.salario);
+    }
 }

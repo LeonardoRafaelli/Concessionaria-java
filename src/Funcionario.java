@@ -35,8 +35,17 @@ public class Funcionario extends Pessoa{
 
     @Override
     public String toString() {
-        return super.toString() + " --- Funcionario{" +
+        return super.toString() + " Funcionario{" +
                 "senha='" + senha + '\'' +
+                ", salario=" + salario +
                 '}';
     }
+
+    public String toString(double num) {
+        return super.toString() + " Funcionario{" +
+                "senha='" + senha + '\'' +
+                ", salario=" + num +
+                '}';
+    }
+
 }
