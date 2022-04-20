@@ -27,11 +27,18 @@ public class Funcionario extends Pessoa{
         this.salario += precoAuto * 0.02;
     }
 
-
     public void mudarSalario(double precoAuto, double porc){
         this.salario += precoAuto * porc;
     }
 
+    @Override
+    public void removerPessoa(int i) {
+        if(Pessoa.listaPessoas.get(i) instanceof Cliente){
+            Pessoa.listaPessoas.remove(i);
+        } else {
+            System.out.println("Matrícula não ligada a algum cliente.");
+        }
+    }
 
     @Override
     public String toString() {

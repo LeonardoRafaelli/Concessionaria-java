@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Pessoa {
+public abstract class Pessoa {
     private int matricula, idade;
     private String nome, cpf, genero, telefone;
 
@@ -16,8 +16,9 @@ public class Pessoa {
     }
 
     public Pessoa() {
-
     }
+
+    public abstract void removerPessoa(int i);
 
     public int getMatricula() {
         return matricula;

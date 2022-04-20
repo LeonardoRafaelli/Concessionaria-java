@@ -26,4 +26,13 @@ public class Dono extends Funcionario{
     public String toString() {
         return super.toString(this.salario);
     }
+
+    @Override
+    public void removerPessoa(int i) {
+        if(Pessoa.listaPessoas.get(i) instanceof Funcionario){
+            Pessoa.listaPessoas.remove(i);
+        } else {
+            System.out.println("Matrícula não ligada a algum funcionário.");
+        }
+    }
 }

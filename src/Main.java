@@ -5,6 +5,8 @@ public class Main {
 
     static Scanner sc = new Scanner(System.in);
 
+    static Pessoa usuario;
+
     public static void main(String[] args) {
         Pessoa.listaPessoas.add(new Dono(1, 45, "Josescreudo", "11209407965", "Masculino", "991964275", "123"));
         Pessoa.listaPessoas.add(new Funcionario(2, 25, "Filipe", "12345678910", "Masculino", "991521540", "321"));
@@ -19,7 +21,8 @@ public class Main {
     private static void programa(){
         int i = login();
         if(i > -1){
-            menuPrincipal(i);
+            usuario = Pessoa.listaPessoas.get(i);
+            menuPrincipal();
         } else {
             System.out.println("Matrícula e/ou senha inválidos!");
             programa();
@@ -40,66 +43,95 @@ public class Main {
         return -1;
     }
 
-    private static void menuPrincipal(int i){
+    private static void menuPrincipal(){
         System.out.print("""
                                 
                 ---- Menu Principal ----
-                1 - Cadastrar veículo;
-                2 - Alterar veículo;
-                3 - Remover veículo;
-                4 - Listar veículos;
-                5 - Listar veículos vendidos;
-                6 - Vender veículo;
-                7 - Listar clientes;
-                8 - Editar clientes;
-                9 - Listar Funcionários;
-                10 - Cadastrar clientes;
-                11 - Remover clientes
-                12 - Sair <<<< ;
-                13 - !!! - Encerrar;""");
-        if(Pessoa.listaPessoas.get(i) instanceof Dono){
-            System.out.print("\n14 - Cadastrar funcionário;" +
-                    "\n15 - Remover funcionário" +
-                    "\n16 - Editar funcionário;" +
-                    "\nDigite aqui: ");
+                1 - Gerenciar Veículos;
+                2 - Gerenciar Clientes;
+                3 - Listar Clientes;
+                4 - Listar Funcionários;
+                5 - Sair <<<< ;
+                6 - !!! - Encerrar;""");
+        if(usuario instanceof Dono){
+            System.out.println("7 - Gerenciar Funcionários");
         } else {
             System.out.print("\nDigite aqui: ");
         }
 
         int opcao = sc.nextInt();
-        if(opcao <= 13){
+        if(opcao <= 6){
             switch (opcao){
-                case 1 -> { cadastraVeiculo(); }
-                case 2 -> { alterarVeiculo(); }
-                case 3 -> { removerVeiculo(); }
-                case 4 -> { listarVeiculos(); }
-                case 5 -> { listarVeiculosVendidos(); }
-                case 6 -> { venderVeiculo(i); }
-                case 7 -> listarPessoa(1);
-                case 8 -> editarPessoa(1);
-                case 9 -> listarPessoa(2);
-                case 10 -> cadastroPessoa(1);
-                case 11 -> removerPessoa(1);
-                case 12 -> programa();
-                case 13 -> System.exit(0);
+                case 1 -> gerenciaVeiculos();
+                case 2 -> gerenciaClientes();
+                case 3 -> listarPessoa(1);
+                case 4 -> listarPessoa(2);
+                case 5 -> programa();
+                case 6 -> System.exit(0);
                 default -> {
                     System.out.print(opcao + ", Não é uma opção válida.");
                 }
             }
-        } else if(opcao <= 16) {
-            if(Pessoa.listaPessoas.get(i) instanceof Dono){
-                switch (opcao){
-                    case 14 -> cadastroPessoa(2);
-                    case 15 -> removerPessoa(2);
-                    case 16 -> editarPessoa(2);
-                }
+        } else if(opcao == 7) {
+            if(usuario instanceof Dono){
+                gerenciaFuncionario();
             } else {
                 System.out.println("Opção inválida!");
             }
         } else {
             System.out.println("Opção inválida!");
         }
-        menuPrincipal(i);
+        menuPrincipal();
+    }
+
+    private static void gerenciaFuncionario(){
+        System.out.print("\n1 - Cadastrar funcionário;" +
+                "\n2 - Remover funcionário" +
+                "\n3 - Editar funcionário;" +
+                "\n4 - Voltar;" +
+                "\nDigite aqui: ");
+        switch (sc.nextInt()){
+            case 1 -> cadastroPessoa(2);
+            case 2 -> removerPessoa(2);
+            case 3 -> editarPessoa(2);
+        }
+    }
+
+    private static void gerenciaClientes(){
+        System.out.print(
+                "1 - Editar clientes;\n" +
+                "2 - Cadastrar clientes;\n" +
+                "3 - Remover clientes" +
+                        "\n-->:");
+        switch (sc.nextInt()){
+
+            case 2 -> editarPessoa(1);
+            case 3 -> cadastroPessoa(1);
+            case 4 -> removerPessoa(1);
+        }
+
+    }
+
+    private static void gerenciaVeiculos(){
+        System.out.print(
+                "1 - Cadastrar veículo;\n" +
+                "2 - Alterar veículo;\n" +
+                "3 - Remover veículo;\n" +
+                "4 - Listar veículos;\n" +
+                "5 - Listar veículos vendidos;\n" +
+                "6 - Vender veículo;\n" +
+                        "-->:");
+        switch (sc.nextInt()){
+            case 1 -> { cadastraVeiculo(); }
+            case 2 -> { alterarVeiculo(); }
+            case 3 -> { removerVeiculo(); }
+            case 4 -> { listarVeiculos(); }
+            case 5 -> { listarVeiculosVendidos(); }
+            case 6 -> { venderVeiculo(); }
+        }
+
+
+
     }
 
     private static void removerPessoa(int tipo){
@@ -108,19 +140,20 @@ public class Main {
         int indice = coletaIndice(sc.nextInt());
         if(indice >= 0){
 
-            if(tipo == 1){
-                if(Pessoa.listaPessoas.get(indice) instanceof Cliente){
-                    Pessoa.listaPessoas.remove(indice);
-                } else {
-                    System.out.println("Matrícula não ligada a algum cliente.");
-                }
-            } else {
-                if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
-                    Pessoa.listaPessoas.remove(indice);
-                } else {
-                    System.out.println("Matrícula não ligada a algum funcionário.");
-                }
-            }
+            usuario.removerPessoa(indice);
+//            if(tipo == 1){
+//                if(Pessoa.listaPessoas.get(indice) instanceof Cliente){
+//                    Pessoa.listaPessoas.remove(indice);
+//                } else {
+//                    System.out.println("Matrícula não ligada a algum cliente.");
+//                }
+//            } else {
+//                if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
+//                    Pessoa.listaPessoas.remove(indice);
+//                } else {
+//                    System.out.println("Matrícula não ligada a algum funcionário.");
+//                }
+//            }
         } else {
             System.out.println("Matrícula não encontrada");
         }
@@ -190,7 +223,7 @@ public class Main {
         }
     }
 
-    private static void venderVeiculo(int indice){
+    private static void venderVeiculo(){
         System.out.print("Insira a placa do veículo vendido: ");
         String placa = sc.next();
         int i = indicePlaca(placa);
@@ -201,11 +234,11 @@ public class Main {
            System.out.println(Automovel.listaAutomoveis.get(i).toString());
            System.out.println("Digite a porcentagem de desconto (max 2%): ");
            double porcentagem = sc.nextDouble();
-           if(Pessoa.listaPessoas.get(indice) instanceof Funcionario){
+           if(usuario instanceof Funcionario){
                if(porcentagem >= 2){
-                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), 0);
+                   ((Funcionario)usuario).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), 0);
                } else if(porcentagem >= 0){
-                   ((Funcionario) Pessoa.listaPessoas.get(indice)).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), (0.02 - (porcentagem/100)));
+                   ((Funcionario)usuario).mudarSalario(Automovel.listaAutomoveis.get(i).getPreco(), (0.02 - (porcentagem/100)));
                }
            }
 
@@ -278,7 +311,7 @@ public class Main {
                 case 1 -> alteraTodosAtrb(tipo, i);
                 case 2 -> alterarAtributO(tipo, i);
                 case 3 -> alterarVeiculo();
-                case 4 -> menuPrincipal(i);
+                case 4 -> menuPrincipal();
                 default -> {
                     System.out.println(alterar + ", não é uma opção válida.n\n");
                     alterarVeiculo();

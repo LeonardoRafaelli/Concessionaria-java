@@ -4,4 +4,8 @@ public class Cliente extends Pessoa{
         super(matricula, idade, nome, cpf, genero, telefone);
     }
 
+    @Override
+    public void removerPessoa(int i) {
+
+    }
 }
